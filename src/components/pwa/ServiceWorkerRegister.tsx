@@ -117,14 +117,6 @@ export const ServiceWorkerRegister: React.FC = () => {
 
   return (
     <>
-      {/* Offline Alert Strip */}
-      {isOffline && (
-        <div className="fixed top-0 left-0 right-0 z-50 bg-[#C41E3A] text-white text-xs font-semibold py-2 px-4 text-center flex items-center justify-center gap-2 shadow-lg animate-in slide-in-from-top">
-          <WifiOff className="w-3.5 h-3.5" />
-          <span>You are currently browsing offline. Pass check-ins remain operational.</span>
-        </div>
-      )}
-
       {/* Floating Bottom PWA Install Banner */}
       {!isInstalled && showPromptBanner && deferredPrompt && (
         <div className="fixed bottom-4 left-4 right-4 sm:left-auto sm:right-6 sm:bottom-6 sm:max-w-md z-50 bg-[#1A1A1A]/95 backdrop-blur-xl text-white border border-[#D4A574]/40 p-4 rounded-3xl shadow-2xl animate-in slide-in-from-bottom duration-300">

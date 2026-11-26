@@ -728,7 +728,7 @@ export default function PassClient({ id = '' }: PassClientProps) {
                 <Share2 className="w-3.5 h-3.5 text-neutral-300" />
               </button>
               <Link
-                href="/"
+                href="/?site=1"
                 className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-400 hover:text-white transition-colors"
                 title="Return Home"
               >
@@ -741,14 +741,6 @@ export default function PassClient({ id = '' }: PassClientProps) {
 
       {/* CENTER FLOATING VIP PASS CARD */}
       <main className="max-w-md sm:max-w-lg mx-auto w-full my-auto py-2 space-y-4 z-10 px-1 sm:px-0">
-        {/* Offline Active Indicator */}
-        {!isOnline && (
-          <div className="flex items-center justify-center gap-2 py-1.5 px-4 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-semibold tracking-wide shadow-[0_0_15px_rgba(16,185,129,0.2)] animate-in fade-in">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Offline Mode Active • Digital Pass Verified on Device</span>
-          </div>
-        )}
-
         <div
           className="relative rounded-[32px] p-5 sm:p-7 bg-[#16171B]/90 backdrop-blur-2xl border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden space-y-5 transition-all duration-300 hover:border-white/20"
           style={{
@@ -878,9 +870,6 @@ export default function PassClient({ id = '' }: PassClientProps) {
                   <div className="font-extrabold text-[12px] tracking-wide flex items-center gap-1.5">
                     <span>Add Pass to Home Screen</span>
                     <Sparkles className="w-3 h-3 text-amber-300" />
-                  </div>
-                  <div className="text-[10px] text-white/80 font-normal lowercase tracking-normal">
-                    1-tap app access • works offline
                   </div>
                 </div>
               </div>

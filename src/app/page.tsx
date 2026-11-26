@@ -19,7 +19,7 @@ export default function Home() {
   const [interceptedPassId, setInterceptedPassId] = useState<string | null>(null);
 
   // Fallback for static hosting rewrites: If Netlify serves index.html for a /pass/... request,
-  // immediately mount the digital pass component instead of rendering the homepage.
+  // or if user is offline / opened standalone PWA with a saved pass, immediately mount digital pass.
   useEffect(() => {
     if (typeof window !== 'undefined') {
       const pathname = window.location.pathname;
@@ -28,6 +28,40 @@ export default function Home() {
         // segments might be ['pass', 'RED-1071']
         const id = segments[1] || new URLSearchParams(window.location.search).get('id') || '';
         setInterceptedPassId(id || 'lookup');
+        return;
+      }
+
+      // If user has a saved member pass and is OFFLINE, OR launched as standalone PWA:
+      try {
+        const urlParams = new URLSearchParams(window.location.search);
+        const browsingSite = urlParams.has('site');
+        const savedPass = localStorage.getItem('redapple_saved_pass_id');
+        const role = localStorage.getItem('redapple_device_role');
+        const isOffline = !navigator.onLine;
+        const isStandalone =
+          window.matchMedia('(display-mode: standalone)').matches ||
+          Boolean((navigator as unknown as { standalone?: boolean }).standalone);
+
+        let validPass = savedPass && savedPass !== '[id]' && !savedPass.includes('[') ? savedPass : null;
+
+        if (!validPass) {
+          const lastPassStr = localStorage.getItem('redapple_last_offline_pass');
+          if (lastPassStr) {
+            try {
+              const parsed = JSON.parse(lastPassStr);
+              if (parsed && (parsed.memberId || parsed.id)) {
+                validPass = parsed.memberId || parsed.id;
+              }
+            } catch {}
+          }
+        }
+
+        // When offline, always open the digital pass if saved on device
+        if (validPass && (isOffline || (isStandalone && !browsingSite) || (role === 'member' && isOffline))) {
+          setInterceptedPassId(validPass);
+        }
+      } catch (e) {
+        console.warn('Home pass routing notice:', e);
       }
     }
   }, []);
