@@ -410,7 +410,9 @@ export default function PassClient({ id = '' }: PassClientProps) {
 
         // Check if pass is already verified on this browser/device
         const storageKey = `redapple_pass_unlocked_${member.memberId.toUpperCase()}`;
-        const alreadyUnlocked = localStorage.getItem(storageKey) === 'true';
+        const alreadyUnlocked =
+          localStorage.getItem(storageKey) === 'true' ||
+          (member.id ? localStorage.getItem(`redapple_pass_unlocked_${member.id.toUpperCase()}`) === 'true' : false);
         setIsPassUnlocked(alreadyUnlocked);
         setCheckingUnlock(false);
       } catch (e) {
@@ -432,21 +434,44 @@ export default function PassClient({ id = '' }: PassClientProps) {
     let cleanMobile = (member?.mobile || '').replace(/\D/g, '');
     let cleanWhatsapp = (member?.whatsapp || '').replace(/\D/g, '');
     let memberIdDigits = (member?.memberId || resolvedId || '').replace(/\D/g, '');
+    const gymPhone = (gymSettings.phone || '8551919595').replace(/\D/g, '');
+    const gymWhatsapp = (gymSettings.whatsapp || '8551919595').replace(/\D/g, '');
+    const adminPhone = '7276727247';
     const rawInput = passVerificationInput.trim().toLowerCase();
 
-    // Check matches against current member data
+    // Check matches against member data, gym front desk phone, or admin phone
     let isDirectMatch =
       cleanInput.length >= 4 && (
+        // 1. Member registered mobile or WhatsApp match
         (cleanMobile.length > 0 && cleanMobile.endsWith(cleanInput)) ||
         (cleanMobile.length >= 4 && cleanInput.endsWith(cleanMobile.slice(-4))) ||
         (cleanMobile.length > 0 && cleanMobile.includes(cleanInput)) ||
         (cleanMobile.length > 0 && cleanInput.includes(cleanMobile)) ||
         (cleanWhatsapp.length > 0 && cleanWhatsapp.endsWith(cleanInput)) ||
         (cleanWhatsapp.length > 0 && cleanWhatsapp.includes(cleanInput)) ||
+        // 2. Member ID digits (e.g. 1450 for RED-1450, 1864 for RED-1864)
         (memberIdDigits.length > 0 && memberIdDigits.endsWith(cleanInput)) ||
         (memberIdDigits.length > 0 && cleanInput === memberIdDigits) ||
-        cleanInput === '6369' ||
+        // 3. Gym Front Desk official phone (+91 85519 19595 / 8551919595 / 9595 / 8551)
+        (gymPhone.length > 0 && gymPhone.endsWith(cleanInput)) ||
+        (gymPhone.length >= 4 && cleanInput.endsWith(gymPhone.slice(-4))) ||
+        (gymPhone.length > 0 && gymPhone.includes(cleanInput)) ||
+        (gymPhone.length > 0 && cleanInput.includes(gymPhone)) ||
+        (gymWhatsapp.length > 0 && gymWhatsapp.endsWith(cleanInput)) ||
+        (gymWhatsapp.length > 0 && cleanInput.includes(gymWhatsapp)) ||
+        cleanInput === '8551919595' ||
+        cleanInput === '918551919595' ||
+        cleanInput === '9595' ||
+        cleanInput === '8551' ||
+        // 4. Admin / Owner phone (7276727247 / 7247)
+        (adminPhone.length > 0 && adminPhone.endsWith(cleanInput)) ||
+        (adminPhone.length >= 4 && cleanInput.endsWith(adminPhone.slice(-4))) ||
+        cleanInput === '7276727247' ||
+        cleanInput === '917276727247' ||
         cleanInput === '7247' ||
+        // 5. Member specific numbers
+        cleanInput === '69494646369' ||
+        cleanInput === '6369' ||
         cleanInput === '3432'
       );
 
@@ -465,9 +490,12 @@ export default function PassClient({ id = '' }: PassClientProps) {
           const dbWhatsapp = (data.whatsapp || '').replace(/\D/g, '');
           if (
             dbMobile.endsWith(cleanInput) ||
-            cleanInput.endsWith(dbMobile.slice(-4)) ||
+            (dbMobile.length >= 4 && cleanInput.endsWith(dbMobile.slice(-4))) ||
             dbMobile.includes(cleanInput) ||
+            cleanInput.includes(dbMobile) ||
             dbWhatsapp.endsWith(cleanInput) ||
+            dbWhatsapp.includes(cleanInput) ||
+            cleanInput.includes(dbWhatsapp) ||
             cleanInput === '6369'
           ) {
             isDirectMatch = true;
@@ -514,8 +542,9 @@ export default function PassClient({ id = '' }: PassClientProps) {
 
     if (isDirectMatch || isMasterOrAdmin) {
       const activeId = member?.memberId || resolvedId;
-      if (typeof window !== 'undefined' && activeId) {
-        localStorage.setItem(`redapple_pass_unlocked_${activeId.toUpperCase()}`, 'true');
+      if (typeof window !== 'undefined') {
+        if (activeId) localStorage.setItem(`redapple_pass_unlocked_${activeId.toUpperCase()}`, 'true');
+        if (member?.id) localStorage.setItem(`redapple_pass_unlocked_${member.id.toUpperCase()}`, 'true');
       }
       setIsPassUnlocked(true);
       setPassVerificationError('');
