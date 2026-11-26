@@ -56,6 +56,12 @@ export default function PassClient({ id = '' }: PassClientProps) {
   const [passVerificationInput, setPassVerificationInput] = useState<string>('');
   const [passVerificationError, setPassVerificationError] = useState<string>('');
   const [isOnline, setIsOnline] = useState<boolean>(true);
+  const [isHydrated, setIsHydrated] = useState<boolean>(false);
+  const [offlineCachedMember, setOfflineCachedMember] = useState<Member | null>(null);
+
+  useEffect(() => {
+    setIsHydrated(true);
+  }, []);
 
   // Online / Offline connectivity listener
   useEffect(() => {
@@ -235,15 +241,18 @@ export default function PassClient({ id = '' }: PassClientProps) {
   }, [resolvedId, foundMember, decodedMember]);
 
   // Offline Local Cache Retrieval: Retrieve persisted member if offline or offline PWA launch
-  const offlineCachedMember: Member | null = useMemo(() => {
-    if (typeof window === 'undefined') return null;
+  useEffect(() => {
+    if (typeof window === 'undefined') return;
     try {
       const cleanId = (resolvedId || savedPassId || '').toUpperCase().trim();
       if (cleanId) {
         const cached = localStorage.getItem(`redapple_offline_pass_${cleanId}`);
         if (cached) {
           const parsed = JSON.parse(cached);
-          if (parsed && (parsed.id || parsed.memberId)) return parsed;
+          if (parsed && (parsed.id || parsed.memberId)) {
+            setOfflineCachedMember(parsed);
+            return;
+          }
         }
       }
 
@@ -259,7 +268,10 @@ export default function PassClient({ id = '' }: PassClientProps) {
               (cleanId.replace(/\D/g, '').length >= 4 && m.mobile?.replace(/\D/g, '').includes(cleanId.replace(/\D/g, '')))
             )
           );
-          if (match) return match;
+          if (match) {
+            setOfflineCachedMember(match);
+            return;
+          }
         }
       }
 
@@ -274,7 +286,8 @@ export default function PassClient({ id = '' }: PassClientProps) {
               m.memberId?.toUpperCase() === cleanId ||
               (cleanId.replace(/\D/g, '').length >= 4 && m.mobile?.replace(/\D/g, '').includes(cleanId.replace(/\D/g, '')))
             )) {
-              return m;
+              setOfflineCachedMember(m);
+              return;
             }
           } catch {}
         }
@@ -286,14 +299,14 @@ export default function PassClient({ id = '' }: PassClientProps) {
         const m = JSON.parse(lastPass);
         if (m && (m.id || m.memberId)) {
           if (!cleanId || cleanId === m.memberId?.toUpperCase() || cleanId === m.id?.toUpperCase() || cleanId === '[ID]') {
-            return m;
+            setOfflineCachedMember(m);
+            return;
           }
         }
       }
     } catch (e) {
       console.warn('Offline cache read notice:', e);
     }
-    return null;
   }, [resolvedId, savedPassId]);
 
   // If not found in loaded state (e.g. member opened link on a fresh device without cloud sync),
@@ -434,6 +447,76 @@ export default function PassClient({ id = '' }: PassClientProps) {
     if (!manualSearch.trim()) return;
     setResolvedId(manualSearch.trim());
   };
+
+  if (!isHydrated) {
+    return (
+      <div className="min-h-[100dvh] h-[100dvh] max-h-[100dvh] bg-[#0B0C0E] text-white flex flex-col justify-between p-2.5 sm:p-4 selection:bg-[#E50914] selection:text-white relative overflow-hidden font-sans">
+        <header className="w-full shrink-0 pt-0.5 pb-1">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-10 h-10 rounded-2xl bg-white p-1 shadow-md border border-white/10 overflow-hidden flex items-center justify-center shrink-0">
+                <img
+                  src="/images/logo.png"
+                  alt="Red Apple Gym"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="min-w-0">
+                <h1 className="font-sans font-black text-sm sm:text-base tracking-wider leading-tight text-white uppercase truncate">
+                  RED APPLE GYM
+                </h1>
+                <p className="text-[10px] font-semibold text-neutral-400 tracking-wider uppercase truncate mt-0.5">
+                  CIDCO N-2 • CHHATRAPATI SAMBHAJINAGAR
+                </p>
+              </div>
+            </div>
+
+            <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-900/90 border border-white/10 shadow-inner">
+              <span className="font-bold text-[10px] tracking-widest text-neutral-200 uppercase font-mono">
+                PASS
+              </span>
+              <span className="w-2 h-2 rounded-full bg-[#E5B85C] animate-pulse" />
+            </div>
+          </div>
+        </header>
+
+        <main className="w-full flex-1 flex flex-col min-h-0 my-0.5">
+          <div className="relative rounded-[28px] p-4 sm:p-5 bg-[#141619] border border-white/10 overflow-hidden flex-1 flex flex-col justify-between gap-3 animate-pulse">
+            <div className="flex items-center gap-3.5 pb-3 border-b border-white/10">
+              <div className="w-[72px] h-[72px] sm:w-[80px] sm:h-[80px] rounded-2xl bg-white/5" />
+              <div className="flex-1 space-y-2">
+                <div className="h-5 bg-white/10 rounded-md w-3/4" />
+                <div className="h-3 bg-white/10 rounded-md w-1/3" />
+                <div className="h-3 bg-white/5 rounded-md w-1/2" />
+              </div>
+            </div>
+            <div className="h-14 bg-white/5 rounded-2xl" />
+            <div className="flex-1 bg-white/5 rounded-2xl flex items-center justify-center min-h-0" />
+          </div>
+        </main>
+
+        <footer className="w-full shrink-0 pt-0.5 pb-1">
+          <div className="p-2.5 px-3.5 rounded-2xl bg-[#141619] backdrop-blur-xl border border-white/10 flex items-center justify-between gap-3 shadow-lg">
+            <div className="pl-1 min-w-0">
+              <span className="text-[11px] text-neutral-200 font-semibold block leading-tight truncate">
+                Gym Front Desk
+              </span>
+              <span className="text-[9px] text-neutral-400 block truncate">
+                Mon-Sat: 6:00 AM - 10:30 PM
+              </span>
+            </div>
+
+            <a
+              href={`tel:${(gymSettings.phone || '8551919595').replace(/\s+/g, '')}`}
+              className="py-1.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 text-neutral-200 hover:text-white text-xs font-bold transition-colors shrink-0"
+            >
+              Call Front Desk
+            </a>
+          </div>
+        </footer>
+      </div>
+    );
+  }
 
   if (!member) {
     return (
@@ -891,27 +974,12 @@ export default function PassClient({ id = '' }: PassClientProps) {
               </span>
             </div>
 
-            <div className="flex items-center gap-2 shrink-0">
-              {member.remainingDays <= 10 && member.remainingDays > 0 && (
-                <a
-                  href={generateWhatsAppLink(
-                    gymSettings.whatsapp || '8551919595',
-                    `Hi Red Apple Gym, I would like to renew my membership for ${member.fullName} (${member.memberId}).`
-                  )}
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="py-1.5 px-3 rounded-xl bg-gradient-to-r from-[#E5B85C] to-[#D4A574] text-[#0B0C0E] hover:brightness-110 text-xs font-bold transition-all shadow-md flex items-center gap-1 shrink-0"
-                >
-                  Renew Plan
-                </a>
-              )}
-              <a
-                href={`tel:${(gymSettings.phone || '8551919595').replace(/\s+/g, '')}`}
-                className="py-1.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 text-neutral-200 hover:text-white text-xs font-bold transition-colors shrink-0"
-              >
-                Call Front Desk
-              </a>
-            </div>
+            <a
+              href={`tel:${(gymSettings.phone || '8551919595').replace(/\s+/g, '')}`}
+              className="py-1.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 text-neutral-200 hover:text-white text-xs font-bold transition-colors shrink-0"
+            >
+              Call Front Desk
+            </a>
           </div>
         </footer>
       </div>
