@@ -733,10 +733,10 @@ export default function PassClient({ id = '' }: PassClientProps) {
             <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#E50914]/25 via-amber-500/10 to-transparent pointer-events-none rounded-tr-[28px]" />
 
             {/* Athlete Profile Header: Polished Photo + Bold Typography + Status Badge */}
-            <div className="flex items-center justify-between gap-3 shrink-0 relative pb-2.5 border-b border-white/10">
+            <div className="flex items-center justify-between gap-3 shrink-0 relative pb-3 border-b border-white/10">
               <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="relative shrink-0">
-                  <div className="w-[66px] h-[66px] rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_16px_rgba(245,194,107,0.35)] bg-neutral-900">
+                  <div className="w-[74px] h-[74px] sm:w-[82px] sm:h-[82px] rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_18px_rgba(245,194,107,0.4)] bg-neutral-900">
                     <img
                       src={member.photo || '/images/gym-1.jpg'}
                       alt={member.fullName}
@@ -746,24 +746,24 @@ export default function PassClient({ id = '' }: PassClientProps) {
                       }}
                     />
                   </div>
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black font-black text-[8px] tracking-wider uppercase shadow-md border border-amber-200">
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-md bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black font-black text-[9px] tracking-wider uppercase shadow-md border border-amber-200">
                     VIP
                   </div>
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-lg sm:text-xl font-black font-sans tracking-tight text-white leading-tight truncate">
+                  <h2 className="text-xl sm:text-2xl font-black font-sans tracking-tight text-white leading-tight truncate">
                     {member.fullName}
                   </h2>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="font-mono text-xs font-bold text-[#D4A574] px-2 py-0.5 rounded-md bg-neutral-900/90 border border-amber-500/30">
+                  <div className="flex items-center gap-2 mt-1 flex-wrap">
+                    <span className="font-mono text-xs sm:text-sm font-bold text-[#D4A574] px-2.5 py-0.5 rounded-md bg-neutral-900/90 border border-amber-500/40">
                       {member.memberId}
                     </span>
-                    <span className="text-[11px] text-neutral-400 font-medium truncate">
+                    <span className="text-xs sm:text-sm text-neutral-300 font-semibold truncate">
                       {member.gender}, {member.age}y
                     </span>
                   </div>
-                  <div className="text-[10px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5 truncate">
+                  <div className="text-xs sm:text-sm text-neutral-300 font-bold uppercase tracking-wider mt-1 truncate">
                     {member.category || 'Gym Only'}
                   </div>
                 </div>
@@ -771,9 +771,9 @@ export default function PassClient({ id = '' }: PassClientProps) {
 
               <div className="shrink-0 self-start mt-1">
                 <span
-                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase border backdrop-blur-md whitespace-nowrap shadow-sm ${statusChipStyle}`}
+                  className={`inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-full text-xs font-black tracking-wider uppercase border backdrop-blur-md whitespace-nowrap shadow-sm ${statusChipStyle}`}
                 >
-                  <span className={`w-1.5 h-1.5 rounded-full ${statusDotColor} animate-pulse`} />
+                  <span className={`w-2 h-2 rounded-full ${statusDotColor} animate-pulse`} />
                   {statusChipText}
                 </span>
               </div>
@@ -781,31 +781,31 @@ export default function PassClient({ id = '' }: PassClientProps) {
 
             {/* 3-Column Stats Row with Validity Countdown Bar */}
             <div className="space-y-2 shrink-0">
-              <div className="grid grid-cols-3 gap-2 py-2.5 px-3 rounded-2xl bg-black/50 border border-white/5 text-left">
+              <div className="grid grid-cols-3 gap-2 py-3 px-3.5 rounded-2xl bg-black/60 border border-white/10 text-left">
                 <div>
-                  <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
+                  <span className="text-[10px] sm:text-xs uppercase font-mono font-bold text-neutral-400 tracking-wider block">
                     PLAN
                   </span>
-                  <span className="font-bold text-xs sm:text-sm text-white block mt-0.5 truncate">
+                  <span className="font-extrabold text-sm sm:text-base text-white block mt-0.5 truncate">
                     {member.plan}
                   </span>
                 </div>
 
-                <div className="border-l border-white/10 pl-2.5">
-                  <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
+                <div className="border-l border-white/10 pl-3">
+                  <span className="text-[10px] sm:text-xs uppercase font-mono font-bold text-neutral-400 tracking-wider block">
                     EXPIRES
                   </span>
-                  <span className="font-mono font-bold text-xs sm:text-sm text-neutral-200 block mt-0.5 truncate">
+                  <span className="font-mono font-bold text-xs sm:text-base text-neutral-200 block mt-0.5 truncate">
                     {member.expiryDate}
                   </span>
                 </div>
 
-                <div className="border-l border-white/10 pl-2.5">
-                  <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
+                <div className="border-l border-white/10 pl-3">
+                  <span className="text-[10px] sm:text-xs uppercase font-mono font-bold text-neutral-400 tracking-wider block">
                     REMAINING
                   </span>
                   <span
-                    className={`font-mono font-bold text-xs sm:text-sm block mt-0.5 truncate ${
+                    className={`font-mono font-black text-sm sm:text-base block mt-0.5 truncate ${
                       isExpired ? 'text-rose-400' : isExpiringSoon ? 'text-[#F5C26B]' : 'text-emerald-400'
                     }`}
                   >
@@ -829,11 +829,11 @@ export default function PassClient({ id = '' }: PassClientProps) {
             </div>
 
             {/* Hero Big High-Contrast Attendance QR Code */}
-            <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-[#08090C] border border-white/10 shadow-inner min-h-0">
-              <div className="bg-white p-3 sm:p-3.5 rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.7)] border-2 border-white/30 flex items-center justify-center">
+            <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-[#08090C] border border-white/10 shadow-inner min-h-0">
+              <div className="bg-white p-3.5 sm:p-4 rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.7)] border-2 border-white/30 flex items-center justify-center">
                 <DynamicQrCode
                   value={passUrl || (member.memberId ? `https://redapplegym.in/pass/${member.memberId}` : '')}
-                  size={215}
+                  size={230}
                   noCardWrapper={true}
                   showDownload={false}
                   showCopy={false}
@@ -841,51 +841,17 @@ export default function PassClient({ id = '' }: PassClientProps) {
                 />
               </div>
 
-              <div className="text-center mt-2 space-y-0.5">
-                <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#D4A574] block">
+              <div className="text-center mt-2.5 space-y-0.5">
+                <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#D4A574] block">
                   ATTENDANCE SCAN CODE
                 </span>
-                <p className="text-[10px] text-neutral-400">
+                <p className="text-[11px] text-neutral-400 font-medium">
                   Scan QR code at front desk for instant biometric check-in
                 </p>
               </div>
             </div>
-
-            {/* Verified Pass Badges Row (Fills bottom of card attractively) */}
-            <div className="grid grid-cols-3 gap-1.5 pt-0.5 text-center text-[10px] text-neutral-400 shrink-0 font-medium">
-              <div className="py-1 px-1.5 rounded-xl bg-white/5 border border-white/5 truncate">
-                ✓ Fast Check-in
-              </div>
-              <div className="py-1 px-1.5 rounded-xl bg-white/5 border border-white/5 truncate">
-                ⚡ Locker Access
-              </div>
-              <div className="py-1 px-1.5 rounded-xl bg-white/5 border border-white/5 truncate">
-                📍 Cidco N-2
-              </div>
-            </div>
           </div>
         </main>
-
-        {/* FOOTER */}
-        <footer className="w-full shrink-0 pt-0.5 pb-1">
-          <div className="p-2.5 px-3.5 rounded-2xl bg-neutral-900/90 backdrop-blur-xl border border-white/10 flex items-center justify-between gap-3 shadow-lg">
-            <div className="pl-1">
-              <span className="text-[11px] text-neutral-200 font-semibold block leading-tight">
-                Gym Front Desk Concierge
-              </span>
-              <span className="text-[9px] text-neutral-500 block">
-                Mon-Sat: 6:00 AM - 10:30 PM
-              </span>
-            </div>
-
-            <a
-              href={`tel:${(gymSettings.phone || '8551919595').replace(/\s+/g, '')}`}
-              className="py-1.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 text-neutral-200 hover:text-white text-xs font-bold transition-colors shrink-0"
-            >
-              Call Front Desk
-            </a>
-          </div>
-        </footer>
       </div>
     </div>
   );
