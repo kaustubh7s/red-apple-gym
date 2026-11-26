@@ -340,8 +340,8 @@ export default function PassClient({ id = '' }: PassClientProps) {
         memberId: cleanId,
         fullName: `Gym Athlete (${cleanId})`,
         photo: 'https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=400&auto=format&fit=crop&q=80',
-        mobile: '+91 85519 19595',
-        whatsapp: '+91 85519 19595',
+        mobile: '',
+        whatsapp: '',
         email: `athlete.${cleanId.toLowerCase()}@redapplefitness.com`,
         gender: 'Male',
         age: 26,
@@ -426,57 +426,27 @@ export default function PassClient({ id = '' }: PassClientProps) {
     setPassVerificationError('');
 
     if (!passVerificationInput.trim()) {
-      setPassVerificationError('Please enter your registered mobile number or last 4 digits.');
+      setPassVerificationError('Please enter the last 4 digits of your registered mobile number.');
       return;
     }
 
     const cleanInput = passVerificationInput.trim().replace(/\D/g, '');
-    let cleanMobile = (member?.mobile || '').replace(/\D/g, '');
-    let cleanWhatsapp = (member?.whatsapp || '').replace(/\D/g, '');
-    let memberIdDigits = (member?.memberId || resolvedId || '').replace(/\D/g, '');
-    const gymPhone = (gymSettings.phone || '8551919595').replace(/\D/g, '');
-    const gymWhatsapp = (gymSettings.whatsapp || '8551919595').replace(/\D/g, '');
-    const adminPhone = '7276727247';
-    const rawInput = passVerificationInput.trim().toLowerCase();
+    if (cleanInput.length < 4) {
+      setPassVerificationError('Please enter at least the last 4 digits of your registered mobile number.');
+      return;
+    }
 
-    // Check matches against member data, gym front desk phone, or admin phone
-    let isDirectMatch =
-      cleanInput.length >= 4 && (
-        // 1. Member registered mobile or WhatsApp match
-        (cleanMobile.length > 0 && cleanMobile.endsWith(cleanInput)) ||
-        (cleanMobile.length >= 4 && cleanInput.endsWith(cleanMobile.slice(-4))) ||
-        (cleanMobile.length > 0 && cleanMobile.includes(cleanInput)) ||
-        (cleanMobile.length > 0 && cleanInput.includes(cleanMobile)) ||
-        (cleanWhatsapp.length > 0 && cleanWhatsapp.endsWith(cleanInput)) ||
-        (cleanWhatsapp.length > 0 && cleanWhatsapp.includes(cleanInput)) ||
-        // 2. Member ID digits (e.g. 1450 for RED-1450, 1864 for RED-1864)
-        (memberIdDigits.length > 0 && memberIdDigits.endsWith(cleanInput)) ||
-        (memberIdDigits.length > 0 && cleanInput === memberIdDigits) ||
-        // 3. Gym Front Desk official phone (+91 85519 19595 / 8551919595 / 9595 / 8551)
-        (gymPhone.length > 0 && gymPhone.endsWith(cleanInput)) ||
-        (gymPhone.length >= 4 && cleanInput.endsWith(gymPhone.slice(-4))) ||
-        (gymPhone.length > 0 && gymPhone.includes(cleanInput)) ||
-        (gymPhone.length > 0 && cleanInput.includes(gymPhone)) ||
-        (gymWhatsapp.length > 0 && gymWhatsapp.endsWith(cleanInput)) ||
-        (gymWhatsapp.length > 0 && cleanInput.includes(gymWhatsapp)) ||
-        cleanInput === '8551919595' ||
-        cleanInput === '918551919595' ||
-        cleanInput === '9595' ||
-        cleanInput === '8551' ||
-        // 4. Admin / Owner phone (7276727247 / 7247)
-        (adminPhone.length > 0 && adminPhone.endsWith(cleanInput)) ||
-        (adminPhone.length >= 4 && cleanInput.endsWith(adminPhone.slice(-4))) ||
-        cleanInput === '7276727247' ||
-        cleanInput === '917276727247' ||
-        cleanInput === '7247' ||
-        // 5. Member specific numbers
-        cleanInput === '69494646369' ||
-        cleanInput === '6369' ||
-        cleanInput === '3432'
-      );
+    // Extract the last 4 digits of whatever was entered
+    const inputLast4 = cleanInput.slice(-4);
 
-    // Fallback: If not matched in memory, query Supabase cloud directly
-    if (!isDirectMatch && supabase && cleanInput.length >= 4) {
+    // 1. Resolve authoritative member: if local state is placeholder or lacks mobile, fetch from Supabase
+    let targetMember: Member | null | undefined =
+      (cloudMember && !cloudMember.fullName.startsWith('Gym Athlete') ? cloudMember : undefined) ||
+      (foundMember && !foundMember.fullName.startsWith('Gym Athlete') ? foundMember : undefined) ||
+      (decodedMember && !decodedMember.fullName.startsWith('Gym Athlete') ? decodedMember : undefined) ||
+      (offlineCachedMember && !offlineCachedMember.fullName.startsWith('Gym Athlete') ? offlineCachedMember : undefined);
+
+    if ((!targetMember || !targetMember.mobile) && supabase) {
       try {
         const cleanId = (member?.memberId || resolvedId || '').toUpperCase().trim();
         const { data } = await supabase
@@ -486,70 +456,74 @@ export default function PassClient({ id = '' }: PassClientProps) {
           .maybeSingle();
 
         if (data && data.mobile) {
-          const dbMobile = data.mobile.replace(/\D/g, '');
-          const dbWhatsapp = (data.whatsapp || '').replace(/\D/g, '');
-          if (
-            dbMobile.endsWith(cleanInput) ||
-            (dbMobile.length >= 4 && cleanInput.endsWith(dbMobile.slice(-4))) ||
-            dbMobile.includes(cleanInput) ||
-            cleanInput.includes(dbMobile) ||
-            dbWhatsapp.endsWith(cleanInput) ||
-            dbWhatsapp.includes(cleanInput) ||
-            cleanInput.includes(dbWhatsapp) ||
-            cleanInput === '6369'
-          ) {
-            isDirectMatch = true;
-            const mapped: Member = {
-              id: data.id,
-              memberId: data.member_id,
-              fullName: data.full_name,
-              photo: data.photo,
-              mobile: data.mobile,
-              whatsapp: data.whatsapp,
-              email: data.email,
-              gender: data.gender,
-              age: data.age,
-              dateOfBirth: data.date_of_birth,
-              plan: data.plan,
-              category: data.category || 'Gym Only',
-              customDurationDays: data.custom_duration_days,
-              joinDate: data.join_date,
-              expiryDate: data.expiry_date,
-              status: data.status,
-              remainingDays: data.remaining_days,
-              remainingDaysText: data.remaining_days_text,
-              attendancePercentage: data.attendance_percentage || 100,
-              totalFee: Number(data.total_fee || 0),
-              amountPaid: Number(data.amount_paid || 0),
-              dueAmount: Number(data.due_amount || 0),
-              dueDate: data.due_date,
-              paymentStatus: data.payment_status,
-              emergencyContact: data.emergency_contact,
-              bloodGroup: data.blood_group,
-              notes: data.notes,
-              assignedWorkoutId: data.assigned_workout_id
-            };
-            setCloudMember(mapped);
-          }
+          const mapped: Member = {
+            id: data.id,
+            memberId: data.member_id,
+            fullName: data.full_name,
+            photo: data.photo,
+            mobile: data.mobile,
+            whatsapp: data.whatsapp,
+            email: data.email,
+            gender: data.gender,
+            age: data.age,
+            dateOfBirth: data.date_of_birth,
+            plan: data.plan,
+            category: data.category || 'Gym Only',
+            customDurationDays: data.custom_duration_days,
+            joinDate: data.join_date,
+            expiryDate: data.expiry_date,
+            status: data.status,
+            remainingDays: data.remaining_days,
+            remainingDaysText: data.remaining_days_text,
+            attendancePercentage: data.attendance_percentage || 100,
+            totalFee: Number(data.total_fee || 0),
+            amountPaid: Number(data.amount_paid || 0),
+            dueAmount: Number(data.due_amount || 0),
+            dueDate: data.due_date,
+            paymentStatus: data.payment_status,
+            emergencyContact: data.emergency_contact,
+            bloodGroup: data.blood_group,
+            notes: data.notes,
+            assignedWorkoutId: data.assigned_workout_id
+          };
+          targetMember = mapped;
+          setCloudMember(mapped);
         }
-      } catch (err) {}
+      } catch (err) {
+        console.warn('Error fetching member on verification:', err);
+      }
     }
 
+    if (!targetMember) {
+      targetMember = member;
+    }
+
+    // 2. Strict last-4 digit verification against the member's registered phone
+    const regMobile = (targetMember?.mobile || '').replace(/\D/g, '');
+    const regWhatsapp = (targetMember?.whatsapp || '').replace(/\D/g, '');
+    const registeredPhone = regMobile || regWhatsapp;
+    const registeredLast4 = registeredPhone.length >= 4 ? registeredPhone.slice(-4) : '';
+
+    // Only allow if the last 4 digits of the entered number match the last 4 digits of the member's registered phone number
+    const isLast4Match = Boolean(registeredLast4 && inputLast4 === registeredLast4);
+
+    const rawInput = passVerificationInput.trim().toLowerCase();
     const isMasterOrAdmin =
       rawInput === 'masterkey' ||
       rawInput === 'admin' ||
-      rawInput === (adminPassword || '').toLowerCase();
+      Boolean(adminPassword && rawInput === adminPassword.toLowerCase());
 
-    if (isDirectMatch || isMasterOrAdmin) {
-      const activeId = member?.memberId || resolvedId;
+    if (isLast4Match || isMasterOrAdmin) {
+      const activeId = targetMember?.memberId || member?.memberId || resolvedId;
       if (typeof window !== 'undefined') {
         if (activeId) localStorage.setItem(`redapple_pass_unlocked_${activeId.toUpperCase()}`, 'true');
+        if (targetMember?.id) localStorage.setItem(`redapple_pass_unlocked_${targetMember.id.toUpperCase()}`, 'true');
         if (member?.id) localStorage.setItem(`redapple_pass_unlocked_${member.id.toUpperCase()}`, 'true');
       }
       setIsPassUnlocked(true);
       setPassVerificationError('');
     } else {
-      setPassVerificationError('Verification failed. Please enter the mobile number registered with your gym membership.');
+      setPassVerificationError('Verification failed. Please enter the last 4 digits of your registered mobile number.');
     }
   };
 
@@ -764,7 +738,7 @@ export default function PassClient({ id = '' }: PassClientProps) {
               Unlock Your Pass
             </h2>
             <p className="text-xs text-neutral-400 max-w-sm mx-auto leading-relaxed">
-              For your privacy &amp; membership security, enter your registered phone number (or last 4 digits) to verify and unlock this pass on your device.
+              For your privacy &amp; membership security, enter the last 4 digits of your registered mobile number to verify and unlock this pass on your device.
             </p>
           </div>
 
@@ -810,7 +784,7 @@ export default function PassClient({ id = '' }: PassClientProps) {
                 autoFocus
                 value={passVerificationInput}
                 onChange={(e) => setPassVerificationInput(e.target.value)}
-                placeholder="Enter Registered Mobile (or last 4 digits)"
+                placeholder="Enter last 4 digits of registered mobile"
                 className="w-full pl-10 pr-4 py-3.5 rounded-2xl bg-neutral-900 border border-white/20 text-white text-xs font-mono placeholder:text-neutral-500 focus:outline-none focus:border-[#E50914] shadow-inner tracking-wider"
               />
             </div>
