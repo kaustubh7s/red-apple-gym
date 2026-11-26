@@ -655,7 +655,7 @@ export default function PassClient({ id = '' }: PassClientProps) {
   }
 
   return (
-    <div className="min-h-screen bg-[#0B0C0E] text-white flex flex-col justify-between p-4 sm:p-6 selection:bg-[#E50914] selection:text-white relative overflow-hidden font-sans">
+    <div className="min-h-[100dvh] h-[100dvh] max-h-[100dvh] bg-[#0B0C0E] text-white flex flex-col justify-between p-2.5 sm:p-4 selection:bg-[#E50914] selection:text-white relative overflow-hidden font-sans">
       {/* Cinematic Ambient Glow Accents */}
       <div className="pointer-events-none fixed top-[-10%] left-[-15%] w-[450px] h-[450px] rounded-full bg-[#E50914]/15 blur-[120px]" />
       <div className="pointer-events-none fixed top-[30%] right-[-15%] w-[400px] h-[400px] rounded-full bg-[#F5C26B]/10 blur-[130px]" />
@@ -669,40 +669,40 @@ export default function PassClient({ id = '' }: PassClientProps) {
         </div>
       )}
 
-      {/* TOP HEADER */}
-      <header className="max-w-md mx-auto w-full pt-2 pb-4 z-10">
-        <div className="flex items-start justify-between gap-3">
-          <div className="flex items-center gap-3">
-            <div className="w-12 h-12 rounded-2xl bg-white p-1 shadow-lg border border-[#D4A574]/40 overflow-hidden flex items-center justify-center shrink-0">
-              <img
-                src="/images/logo.png"
-                alt="Red Apple Gym and Fitness Center"
-                className="w-full h-full object-contain"
-              />
-            </div>
-            <div>
-              <h1 className="font-black text-lg sm:text-xl tracking-tight leading-tight text-white font-sans uppercase">
-                RED APPLE GYM
-              </h1>
-              <p className="text-[10px] sm:text-xs font-bold text-[#D4A574] tracking-wider uppercase">
-                AND FITNESS CENTER • CIDCO N-2
-              </p>
-              <div className="flex items-center gap-1.5 text-[11px] text-neutral-400 mt-0.5 font-medium">
-                <MapPin className="w-3 h-3 text-[#E50914] shrink-0" />
-                <span>Chhatrapati Sambhajinagar</span>
+      <div className="max-w-md mx-auto w-full h-full flex flex-col justify-between flex-1 gap-1.5 z-10 min-h-0">
+        {/* TOP HEADER */}
+        <header className="w-full shrink-0 pt-0.5 pb-1">
+          <div className="flex items-center justify-between gap-3">
+            <div className="flex items-center gap-2.5 min-w-0">
+              <div className="w-10 h-10 rounded-2xl bg-white p-1 shadow-lg border border-[#D4A574]/40 overflow-hidden flex items-center justify-center shrink-0">
+                <img
+                  src="/images/logo.png"
+                  alt="Red Apple Gym and Fitness Center"
+                  className="w-full h-full object-contain"
+                />
+              </div>
+              <div className="min-w-0">
+                <h1 className="font-black text-sm sm:text-base tracking-tight leading-tight text-white uppercase truncate">
+                  RED APPLE GYM
+                </h1>
+                <p className="text-[10px] font-bold text-[#D4A574] tracking-wider uppercase truncate">
+                  AND FITNESS CENTER • CIDCO N-2
+                </p>
+                <div className="flex items-center gap-1 text-[10px] text-neutral-400 mt-0.5 font-medium truncate">
+                  <MapPin className="w-2.5 h-2.5 text-[#E50914] shrink-0" />
+                  <span>Chhatrapati Sambhajinagar</span>
+                </div>
               </div>
             </div>
-          </div>
 
-          <div className="flex flex-col items-end gap-2 shrink-0">
-            <div className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-full bg-neutral-900/80 border border-white/15 backdrop-blur-md shadow-inner">
-              <span className="font-bold text-[11px] tracking-widest text-neutral-200 uppercase font-mono">
-                VIP PASS
-              </span>
-              <span className="w-2.5 h-2.5 rounded-full bg-amber-400 shadow-[0_0_10px_#F59E0B] animate-pulse" />
-            </div>
+            <div className="flex items-center gap-1.5 shrink-0">
+              <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-neutral-900/90 border border-white/15 shadow-inner">
+                <span className="font-bold text-[10px] tracking-widest text-neutral-200 uppercase font-mono">
+                  VIP PASS
+                </span>
+                <span className="w-2 h-2 rounded-full bg-amber-400 shadow-[0_0_8px_#F59E0B] animate-pulse" />
+              </div>
 
-            <div className="flex items-center gap-1.5">
               <button
                 onClick={handleShare}
                 className="p-1.5 rounded-full bg-white/5 hover:bg-white/10 border border-white/10 text-neutral-400 hover:text-white transition-colors"
@@ -719,140 +719,140 @@ export default function PassClient({ id = '' }: PassClientProps) {
               </Link>
             </div>
           </div>
-        </div>
-      </header>
+        </header>
 
-      {/* CENTER FLOATING VIP PASS CARD */}
-      <main className="max-w-md sm:max-w-lg mx-auto w-full my-auto py-2 space-y-4 z-10 px-1 sm:px-0">
-        <div
-          className="relative rounded-[32px] p-5 sm:p-7 bg-[#16171B]/90 backdrop-blur-2xl border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden space-y-5 transition-all duration-300 hover:border-white/20"
-          style={{
-            boxShadow: '0 20px 50px rgba(0, 0, 0, 0.6), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
-          }}
-        >
-          <div className="absolute top-0 right-0 w-36 h-36 bg-gradient-to-bl from-[#E50914]/20 via-transparent to-transparent pointer-events-none rounded-tr-[32px]" />
-
-          {/* Member Card Header: Photo + Name + Status Badge (never clipped) */}
-          <div className="flex items-start justify-between gap-3 relative">
-            <div className="flex items-center gap-3.5 min-w-0 flex-1">
-              <div className="relative shrink-0">
-                <div className="w-[74px] h-[74px] sm:w-[84px] sm:h-[84px] rounded-2xl overflow-hidden border-2 border-[#E50914] shadow-[0_0_20px_rgba(229,9,20,0.45)] bg-neutral-900">
-                  <img
-                    src={member.photo || '/images/gym-1.jpg'}
-                    alt={member.fullName}
-                    className="w-full h-full object-cover object-center"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = '/images/logo.png';
-                    }}
-                  />
-                </div>
-                <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-md bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black font-black text-[9px] tracking-wider uppercase shadow-md border border-amber-200">
-                  VIP
-                </div>
-              </div>
-
-              <div className="min-w-0 flex-1 pr-1">
-                <h2 className="text-lg sm:text-2xl font-bold font-sans tracking-tight text-white leading-tight break-words line-clamp-2">
-                  {member.fullName}
-                </h2>
-                <div className="font-mono text-xs sm:text-sm font-bold text-neutral-400 tracking-wider mt-1">
-                  {member.memberId}
-                </div>
-                <div className="text-[11px] sm:text-xs text-neutral-400 font-medium mt-0.5">
-                  {member.gender}, {member.age}y • {member.category || 'Gym Only'}
-                </div>
-              </div>
-            </div>
-
-            <div className="shrink-0 self-start">
-              <span
-                className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase border backdrop-blur-md whitespace-nowrap shadow-sm ${statusChipStyle}`}
-              >
-                <span className={`w-1.5 h-1.5 rounded-full ${statusDotColor} animate-pulse`} />
-                {statusChipText}
-              </span>
-            </div>
-          </div>
-
-          {/* 3-Column Stats Row (properly spaced so text doesn't truncate) */}
-          <div className="grid grid-cols-3 gap-2 pt-3 border-t border-white/10 text-left">
-            <div>
-              <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
-                PLAN
-              </span>
-              <span className="font-bold text-xs sm:text-sm text-white block mt-0.5 truncate">
-                {member.plan}
-              </span>
-            </div>
-
-            <div className="border-l border-white/10 pl-2.5 sm:pl-3">
-              <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
-                EXPIRES
-              </span>
-              <span className="font-mono font-bold text-xs sm:text-sm text-neutral-200 block mt-0.5 truncate">
-                {member.expiryDate}
-              </span>
-            </div>
-
-            <div className="border-l border-white/10 pl-2.5 sm:pl-3">
-              <span className="text-[10px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
-                STATUS
-              </span>
-              <span
-                className={`font-mono font-bold text-xs sm:text-sm block mt-0.5 truncate ${
-                  isExpired ? 'text-rose-400' : isExpiringSoon ? 'text-[#F5C26B]' : 'text-emerald-400'
-                }`}
-              >
-                {member.remainingDays > 0 ? `${member.remainingDays}d Left` : 'Expired'}
-              </span>
-            </div>
-          </div>
-
-          {/* QR Code Section: Single clean white rounded frame */}
-          <div className="p-3.5 sm:p-4 rounded-[24px] bg-[#101114]/90 border border-white/10 flex items-center justify-between gap-3 sm:gap-4 shadow-inner">
-            <div className="shrink-0 bg-white p-2 sm:p-2.5 rounded-2xl shadow-xl flex items-center justify-center">
-              <DynamicQrCode
-                value={passUrl || (member.memberId ? `https://redapplegym.in/pass/${member.memberId}` : '')}
-                size={110}
-                noCardWrapper={true}
-                showDownload={false}
-                showCopy={false}
-                memberId={member.memberId}
-              />
-            </div>
-
-            <div className="flex-1 space-y-1.5">
-              <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-300 block">
-                FAST SCAN ACCESS •
-              </span>
-              <p className="text-[11px] text-neutral-400 leading-snug">
-                Scan QR code at gym front desk for instant attendance check-in.
-              </p>
-            </div>
-          </div>
-        </div>
-      </main>
-
-      {/* FOOTER */}
-      <footer className="max-w-md mx-auto w-full pt-4 pb-2 z-10">
-        <div className="p-3.5 rounded-full bg-neutral-900/80 backdrop-blur-xl border border-white/10 flex items-center justify-between gap-3 shadow-lg">
-          <div className="pl-2">
-            <span className="text-[11px] text-neutral-300 font-semibold block leading-tight">
-              Gym Front Desk Concierge
-            </span>
-            <span className="text-[10px] text-neutral-500 block">
-              Mon-Sat: 6:00 AM - 10:30 PM
-            </span>
-          </div>
-
-          <a
-            href={`tel:${(gymSettings.phone || '8551919595').replace(/\s+/g, '')}`}
-            className="py-2 px-4 rounded-full bg-white/5 hover:bg-white/10 border border-white/20 text-neutral-200 hover:text-white text-xs font-bold transition-colors shrink-0"
+        {/* FULL-HEIGHT EXPANDED VIP PASS CARD */}
+        <main className="w-full flex-1 flex flex-col min-h-0 my-0.5">
+          <div
+            className="relative rounded-[28px] p-4 sm:p-5 bg-[#16171B]/95 backdrop-blur-2xl border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden flex-1 flex flex-col justify-between gap-2.5"
+            style={{
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1)'
+            }}
           >
-            Call Front Desk
-          </a>
-        </div>
-      </footer>
+            <div className="absolute top-0 right-0 w-44 h-44 bg-gradient-to-bl from-[#E50914]/20 via-transparent to-transparent pointer-events-none rounded-tr-[28px]" />
+
+            {/* Member Card Header: Photo + Name + Status Badge (never clipped) */}
+            <div className="flex items-start justify-between gap-3 shrink-0 relative">
+              <div className="flex items-center gap-3 min-w-0 flex-1">
+                <div className="relative shrink-0">
+                  <div className="w-[72px] h-[72px] sm:w-[82px] sm:h-[82px] rounded-2xl overflow-hidden border-2 border-[#E50914] shadow-[0_0_20px_rgba(229,9,20,0.45)] bg-neutral-900">
+                    <img
+                      src={member.photo || '/images/gym-1.jpg'}
+                      alt={member.fullName}
+                      className="w-full h-full object-cover object-center"
+                      onError={(e) => {
+                        (e.target as HTMLImageElement).src = '/images/logo.png';
+                      }}
+                    />
+                  </div>
+                  <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-md bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black font-black text-[9px] tracking-wider uppercase shadow-md border border-amber-200">
+                    VIP
+                  </div>
+                </div>
+
+                <div className="min-w-0 flex-1 pr-1">
+                  <h2 className="text-xl sm:text-2xl font-black font-sans tracking-tight text-white leading-tight break-words line-clamp-1">
+                    {member.fullName}
+                  </h2>
+                  <div className="font-mono text-xs sm:text-sm font-bold text-[#D4A574] tracking-wider mt-0.5">
+                    {member.memberId}
+                  </div>
+                  <div className="text-[11px] sm:text-xs text-neutral-400 font-medium mt-0.5 truncate">
+                    {member.gender}, {member.age}y • {member.category || 'Gym Only'}
+                  </div>
+                </div>
+              </div>
+
+              <div className="shrink-0 self-start">
+                <span
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase border backdrop-blur-md whitespace-nowrap shadow-sm ${statusChipStyle}`}
+                >
+                  <span className={`w-1.5 h-1.5 rounded-full ${statusDotColor} animate-pulse`} />
+                  {statusChipText}
+                </span>
+              </div>
+            </div>
+
+            {/* 3-Column Stats Row */}
+            <div className="grid grid-cols-3 gap-2 py-2 px-3 rounded-2xl bg-neutral-900/80 border border-white/5 shrink-0 text-left">
+              <div>
+                <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
+                  PLAN
+                </span>
+                <span className="font-bold text-xs sm:text-sm text-white block mt-0.5 truncate">
+                  {member.plan}
+                </span>
+              </div>
+
+              <div className="border-l border-white/10 pl-2.5">
+                <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
+                  EXPIRES
+                </span>
+                <span className="font-mono font-bold text-xs sm:text-sm text-neutral-200 block mt-0.5 truncate">
+                  {member.expiryDate}
+                </span>
+              </div>
+
+              <div className="border-l border-white/10 pl-2.5">
+                <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
+                  STATUS
+                </span>
+                <span
+                  className={`font-mono font-bold text-xs sm:text-sm block mt-0.5 truncate ${
+                    isExpired ? 'text-rose-400' : isExpiringSoon ? 'text-[#F5C26B]' : 'text-emerald-400'
+                  }`}
+                >
+                  {member.remainingDays > 0 ? `${member.remainingDays}d Left` : 'Expired'}
+                </span>
+              </div>
+            </div>
+
+            {/* Big Centered High-Contrast Attendance QR Section */}
+            <div className="flex-1 flex flex-col items-center justify-center p-3 rounded-2xl bg-[#0F1013] border border-white/10 shadow-inner min-h-0">
+              <div className="bg-white p-2.5 sm:p-3 rounded-2xl shadow-2xl flex items-center justify-center">
+                <DynamicQrCode
+                  value={passUrl || (member.memberId ? `https://redapplegym.in/pass/${member.memberId}` : '')}
+                  size={160}
+                  noCardWrapper={true}
+                  showDownload={false}
+                  showCopy={false}
+                  memberId={member.memberId}
+                />
+              </div>
+
+              <div className="text-center mt-2 space-y-0.5">
+                <span className="text-[10px] font-mono font-bold uppercase tracking-wider text-neutral-300 block">
+                  FAST SCAN ACCESS
+                </span>
+                <p className="text-[10px] text-neutral-500">
+                  Scan QR code at gym front desk for instant attendance check-in.
+                </p>
+              </div>
+            </div>
+          </div>
+        </main>
+
+        {/* FOOTER */}
+        <footer className="w-full shrink-0 pt-0.5 pb-1">
+          <div className="p-2.5 px-3.5 rounded-2xl bg-neutral-900/90 backdrop-blur-xl border border-white/10 flex items-center justify-between gap-3 shadow-lg">
+            <div className="pl-1">
+              <span className="text-[11px] text-neutral-200 font-semibold block leading-tight">
+                Gym Front Desk Concierge
+              </span>
+              <span className="text-[9px] text-neutral-500 block">
+                Mon-Sat: 6:00 AM - 10:30 PM
+              </span>
+            </div>
+
+            <a
+              href={`tel:${(gymSettings.phone || '8551919595').replace(/\s+/g, '')}`}
+              className="py-1.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 text-neutral-200 hover:text-white text-xs font-bold transition-colors shrink-0"
+            >
+              Call Front Desk
+            </a>
+          </div>
+        </footer>
+      </div>
     </div>
   );
 }
