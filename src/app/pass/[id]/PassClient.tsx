@@ -829,11 +829,11 @@ export default function PassClient({ id = '' }: PassClientProps) {
             </div>
 
             {/* Hero Big High-Contrast Attendance QR Code */}
-            <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-[#08090C] border border-white/10 shadow-inner min-h-0">
-              <div className="bg-white p-3.5 sm:p-4 rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.7)] border-2 border-white/30 flex items-center justify-center">
+            <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-[#08090C] border border-white/10 shadow-inner min-h-0">
+              <div className="bg-white p-3 sm:p-3.5 rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.7)] border-2 border-white/30 flex items-center justify-center">
                 <DynamicQrCode
                   value={passUrl || (member.memberId ? `https://redapplegym.in/pass/${member.memberId}` : '')}
-                  size={230}
+                  size={215}
                   noCardWrapper={true}
                   showDownload={false}
                   showCopy={false}
@@ -841,17 +841,38 @@ export default function PassClient({ id = '' }: PassClientProps) {
                 />
               </div>
 
-              <div className="text-center mt-2.5 space-y-0.5">
+              <div className="text-center mt-2 space-y-0.5">
                 <span className="text-xs font-mono font-bold uppercase tracking-widest text-[#D4A574] block">
                   ATTENDANCE SCAN CODE
                 </span>
-                <p className="text-[11px] text-neutral-400 font-medium">
+                <p className="text-[10px] sm:text-[11px] text-neutral-400 font-medium">
                   Scan QR code at front desk for instant biometric check-in
                 </p>
               </div>
             </div>
           </div>
         </main>
+
+        {/* FOOTER */}
+        <footer className="w-full shrink-0 pt-0.5 pb-1">
+          <div className="p-2.5 px-3.5 rounded-2xl bg-neutral-900/90 backdrop-blur-xl border border-white/10 flex items-center justify-between gap-3 shadow-lg">
+            <div className="pl-1">
+              <span className="text-[11px] text-neutral-200 font-semibold block leading-tight">
+                Gym Front Desk
+              </span>
+              <span className="text-[9px] text-neutral-500 block">
+                Mon-Sat: 6:00 AM - 10:30 PM
+              </span>
+            </div>
+
+            <a
+              href={`tel:${(gymSettings.phone || '8551919595').replace(/\s+/g, '')}`}
+              className="py-1.5 px-3.5 rounded-xl bg-white/5 hover:bg-white/10 border border-white/20 text-neutral-200 hover:text-white text-xs font-bold transition-colors shrink-0"
+            >
+              Call Front Desk
+            </a>
+          </div>
+        </footer>
       </div>
     </div>
   );
