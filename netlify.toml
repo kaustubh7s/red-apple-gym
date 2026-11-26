@@ -1,0 +1,53 @@
+[build]
+  command = "npm run build"
+  publish = "out"
+
+[[redirects]]
+  from = "/pass/*"
+  to = "/pass.html"
+  status = 200
+
+[[redirects]]
+  from = "/pass"
+  to = "/pass.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/admin/*"
+  to = "/admin.html"
+  status = 200
+
+[[redirects]]
+  from = "/trainer"
+  to = "/trainer.html"
+  status = 200
+
+[[redirects]]
+  from = "/trainer/*"
+  to = "/trainer.html"
+  status = 200
+
+[[redirects]]
+  from = "/admission"
+  to = "/admission.html"
+  status = 200
+
+[[redirects]]
+  from = "/admission/*"
+  to = "/admission.html"
+  status = 200
+
+[[redirects]]
+  from = "/offline"
+  to = "/offline.html"
+  status = 200
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200

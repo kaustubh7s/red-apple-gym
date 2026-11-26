@@ -1,26 +1,171 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
-}
-
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
-}
-
-@media (prefers-color-scheme: dark) {
+@layer base {
   :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
+    --bg-paper: #F8F6F4;
+    --bg-paper-alt: #EDEAE6;
+    --bg-card: rgba(255, 255, 255, 0.94);
+    --brand-red: #C41E3A;
+    --brand-red-dark: #8B1528;
+    --brand-dark: #1A1A1A;
+    --brand-gold: #D4A574;
+    --brand-gold-dark: #C4915C;
+    --text-primary: #1A1A1A;
+    --text-secondary: #4A4A4A;
+    --text-muted: #8A8A8A;
+    --border-light: rgba(0, 0, 0, 0.07);
+    --border-gold: rgba(212, 165, 116, 0.35);
+  }
+
+  html, body {
+    background-color: var(--bg-paper);
+    color: var(--text-primary);
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    overflow-x: hidden;
+    max-width: 100%;
+    width: 100%;
+    scroll-behavior: smooth;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  h1, h2, h3, .font-serif {
+    font-family: 'Playfair Display', Georgia, serif;
   }
 }
 
-body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+/* Custom Fonts & Typographic Hierarchy */
+.font-editorial {
+  font-family: 'Playfair Display', Georgia, serif;
+}
+
+.font-sans-ui {
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.font-telemetry {
+  font-family: 'JetBrains Mono', monospace;
+}
+
+.font-marathi {
+  font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+}
+
+/* Luxury Paper & Glass Cards */
+.premium-card {
+  background: rgba(255, 255, 255, 0.94);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(0, 0, 0, 0.07);
+  box-shadow: 0 10px 30px -5px rgba(0, 0, 0, 0.04), 0 2px 6px -1px rgba(0, 0, 0, 0.02);
+  border-radius: 16px;
+}
+
+.premium-card-dark {
+  background: #1A1A1A;
+  color: #FFFFFF;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  box-shadow: 0 20px 40px -10px rgba(0, 0, 0, 0.3);
+  border-radius: 16px;
+}
+
+.premium-card-gold {
+  background: linear-gradient(135deg, #FFFFFF 0%, #FAF6F0 100%);
+  border: 1.5px solid rgba(212, 165, 116, 0.5);
+  box-shadow: 0 16px 40px -10px rgba(212, 165, 116, 0.18);
+  border-radius: 16px;
+}
+
+.premium-card-hover {
+  transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+.premium-card-hover:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 20px 50px -10px rgba(0, 0, 0, 0.08), 0 8px 16px -2px rgba(0, 0, 0, 0.04);
+  border-color: rgba(196, 30, 58, 0.25);
+}
+
+/* Gold Accents & Badges */
+.gold-badge {
+  background: rgba(212, 165, 116, 0.12);
+  color: #9E6B32;
+  border: 1px solid rgba(212, 165, 116, 0.3);
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #A87B44 0%, #D4A574 50%, #9E6B32 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.crimson-gradient-text {
+  background: linear-gradient(135deg, #C41E3A 0%, #8B1528 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+/* Signature Red Stripe */
+.signature-stripe {
+  height: 2px;
+  background: linear-gradient(90deg, #C41E3A 0%, #D4A574 50%, transparent 100%);
+}
+
+/* Status Badges */
+.badge-active {
+  background: rgba(46, 125, 50, 0.1);
+  color: #2E7D32;
+  border: 1px solid rgba(46, 125, 50, 0.25);
+}
+
+.badge-expiring {
+  background: rgba(230, 126, 34, 0.1);
+  color: #D35400;
+  border: 1px solid rgba(230, 126, 34, 0.25);
+}
+
+.badge-expired {
+  background: rgba(196, 30, 58, 0.1);
+  color: #C41E3A;
+  border: 1px solid rgba(196, 30, 58, 0.25);
+}
+
+/* Apple Wallet Pass Metallic Sheen */
+.wallet-pass-effect {
+  background: linear-gradient(135deg, #FFFFFF 0%, #F9F7F5 50%, #F0EAE3 100%);
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 25px 60px -15px rgba(26, 26, 26, 0.15), 0 0 0 1px rgba(0,0,0,0.06);
+}
+
+/* Smooth Scrollbar */
+::-webkit-scrollbar {
+  width: 7px;
+  height: 7px;
+}
+::-webkit-scrollbar-track {
+  background: #F8F6F4;
+}
+::-webkit-scrollbar-thumb {
+  background: #D5D0C9;
+  border-radius: 9999px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #C41E3A;
+}
+
+/* Print Rules */
+@media print {
+  body * {
+    visibility: hidden;
+  }
+  .printable-area, .printable-area * {
+    visibility: visible;
+  }
+  .printable-area {
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    background: white !important;
+    color: black !important;
+  }
 }

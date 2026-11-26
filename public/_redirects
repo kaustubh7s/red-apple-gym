@@ -1,0 +1,13 @@
+# Netlify Single Page Application (SPA) Client Routing
+/pass/*        /pass.html       200
+/pass          /pass.html       200
+/admin         /admin.html      200
+/admin/*       /admin.html      200
+/trainer       /trainer.html    200
+/trainer/*     /trainer.html    200
+/kiosk         /kiosk.html      200
+/kiosk/*       /kiosk.html      200
+/admission     /admission.html  200
+/admission/*   /admission.html  200
+/offline       /offline.html    200
+/*             /index.html      200
