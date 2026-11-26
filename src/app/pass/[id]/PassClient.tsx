@@ -724,18 +724,19 @@ export default function PassClient({ id = '' }: PassClientProps) {
         {/* FULL-HEIGHT EXPANDED VIP PASS CARD */}
         <main className="w-full flex-1 flex flex-col min-h-0 my-0.5">
           <div
-            className="relative rounded-[28px] p-4 sm:p-5 bg-gradient-to-b from-[#18191E] via-[#141519] to-[#0F1014] backdrop-blur-2xl border border-amber-500/20 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden flex-1 flex flex-col justify-between gap-3"
+            className="relative rounded-[28px] p-4 sm:p-5 bg-gradient-to-b from-[#18191E] via-[#131418] to-[#0D0E12] backdrop-blur-2xl border border-amber-500/30 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.9)] overflow-hidden flex-1 flex flex-col justify-between gap-2.5"
             style={{
-              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(245, 194, 107, 0.2)'
+              boxShadow: '0 20px 50px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(245, 194, 107, 0.25)'
             }}
           >
-            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#E50914]/20 via-amber-500/5 to-transparent pointer-events-none rounded-tr-[28px]" />
+            {/* Ambient Corner Flare */}
+            <div className="absolute top-0 right-0 w-48 h-48 bg-gradient-to-bl from-[#E50914]/25 via-amber-500/10 to-transparent pointer-events-none rounded-tr-[28px]" />
 
-            {/* Athlete Profile Header: Compact Photo + Name & Status */}
+            {/* Athlete Profile Header: Polished Photo + Bold Typography + Status Badge */}
             <div className="flex items-center justify-between gap-3 shrink-0 relative pb-2.5 border-b border-white/10">
-              <div className="flex items-center gap-3 min-w-0 flex-1">
+              <div className="flex items-center gap-3.5 min-w-0 flex-1">
                 <div className="relative shrink-0">
-                  <div className="w-12 h-12 rounded-xl overflow-hidden border-2 border-amber-400/80 shadow-[0_0_12px_rgba(245,194,107,0.3)] bg-neutral-900">
+                  <div className="w-[66px] h-[66px] rounded-2xl overflow-hidden border-2 border-amber-400/90 shadow-[0_0_16px_rgba(245,194,107,0.35)] bg-neutral-900">
                     <img
                       src={member.photo || '/images/gym-1.jpg'}
                       alt={member.fullName}
@@ -745,29 +746,32 @@ export default function PassClient({ id = '' }: PassClientProps) {
                       }}
                     />
                   </div>
-                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-1.5 py-0.2 rounded bg-amber-400 text-black font-black text-[8px] tracking-wider uppercase shadow">
+                  <div className="absolute -bottom-1 left-1/2 -translate-x-1/2 px-2 py-0.5 rounded-md bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black font-black text-[8px] tracking-wider uppercase shadow-md border border-amber-200">
                     VIP
                   </div>
                 </div>
 
                 <div className="min-w-0 flex-1">
-                  <h2 className="text-base sm:text-lg font-black font-sans tracking-tight text-white leading-tight truncate">
+                  <h2 className="text-lg sm:text-xl font-black font-sans tracking-tight text-white leading-tight truncate">
                     {member.fullName}
                   </h2>
-                  <div className="flex items-center gap-2 mt-0.5">
-                    <span className="font-mono text-xs font-bold text-[#D4A574] tracking-wider">
+                  <div className="flex items-center gap-2 mt-1">
+                    <span className="font-mono text-xs font-bold text-[#D4A574] px-2 py-0.5 rounded-md bg-neutral-900/90 border border-amber-500/30">
                       {member.memberId}
                     </span>
-                    <span className="text-[10px] text-neutral-400 font-medium truncate">
-                      • {member.gender}, {member.age}y • {member.category || 'Gym Only'}
+                    <span className="text-[11px] text-neutral-400 font-medium truncate">
+                      {member.gender}, {member.age}y
                     </span>
+                  </div>
+                  <div className="text-[10px] text-neutral-400 font-semibold uppercase tracking-wider mt-0.5 truncate">
+                    {member.category || 'Gym Only'}
                   </div>
                 </div>
               </div>
 
-              <div className="shrink-0">
+              <div className="shrink-0 self-start mt-1">
                 <span
-                  className={`inline-flex items-center gap-1.5 px-3 py-1 rounded-full text-[10px] font-bold tracking-wider uppercase border backdrop-blur-md whitespace-nowrap shadow-sm ${statusChipStyle}`}
+                  className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full text-[10px] font-bold tracking-wider uppercase border backdrop-blur-md whitespace-nowrap shadow-sm ${statusChipStyle}`}
                 >
                   <span className={`w-1.5 h-1.5 rounded-full ${statusDotColor} animate-pulse`} />
                   {statusChipText}
@@ -775,46 +779,61 @@ export default function PassClient({ id = '' }: PassClientProps) {
               </div>
             </div>
 
-            {/* 3-Column Stats Row */}
-            <div className="grid grid-cols-3 gap-2 py-2 px-3 rounded-2xl bg-black/40 border border-white/5 shrink-0 text-left">
-              <div>
-                <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
-                  PLAN
-                </span>
-                <span className="font-bold text-xs sm:text-sm text-white block mt-0.5 truncate">
-                  {member.plan}
-                </span>
+            {/* 3-Column Stats Row with Validity Countdown Bar */}
+            <div className="space-y-2 shrink-0">
+              <div className="grid grid-cols-3 gap-2 py-2.5 px-3 rounded-2xl bg-black/50 border border-white/5 text-left">
+                <div>
+                  <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
+                    PLAN
+                  </span>
+                  <span className="font-bold text-xs sm:text-sm text-white block mt-0.5 truncate">
+                    {member.plan}
+                  </span>
+                </div>
+
+                <div className="border-l border-white/10 pl-2.5">
+                  <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
+                    EXPIRES
+                  </span>
+                  <span className="font-mono font-bold text-xs sm:text-sm text-neutral-200 block mt-0.5 truncate">
+                    {member.expiryDate}
+                  </span>
+                </div>
+
+                <div className="border-l border-white/10 pl-2.5">
+                  <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
+                    REMAINING
+                  </span>
+                  <span
+                    className={`font-mono font-bold text-xs sm:text-sm block mt-0.5 truncate ${
+                      isExpired ? 'text-rose-400' : isExpiringSoon ? 'text-[#F5C26B]' : 'text-emerald-400'
+                    }`}
+                  >
+                    {member.remainingDays > 0 ? `${member.remainingDays}d Left` : 'Expired'}
+                  </span>
+                </div>
               </div>
 
-              <div className="border-l border-white/10 pl-2.5">
-                <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
-                  EXPIRES
-                </span>
-                <span className="font-mono font-bold text-xs sm:text-sm text-neutral-200 block mt-0.5 truncate">
-                  {member.expiryDate}
-                </span>
-              </div>
-
-              <div className="border-l border-white/10 pl-2.5">
-                <span className="text-[9px] uppercase font-mono font-bold text-neutral-500 tracking-wider block">
-                  STATUS
-                </span>
-                <span
-                  className={`font-mono font-bold text-xs sm:text-sm block mt-0.5 truncate ${
-                    isExpired ? 'text-rose-400' : isExpiringSoon ? 'text-[#F5C26B]' : 'text-emerald-400'
+              {/* Visual Validity Bar */}
+              <div className="w-full bg-white/5 h-1.5 rounded-full overflow-hidden border border-white/5">
+                <div
+                  className={`h-full rounded-full transition-all ${
+                    isExpired
+                      ? 'bg-rose-500 w-full'
+                      : isExpiringSoon
+                      ? 'bg-gradient-to-r from-amber-500 to-amber-300 w-1/4'
+                      : 'bg-gradient-to-r from-emerald-500 to-[#00F59B] w-3/4'
                   }`}
-                >
-                  {member.remainingDays > 0 ? `${member.remainingDays}d Left` : 'Expired'}
-                </span>
+                />
               </div>
             </div>
 
-            {/* Big Centered High-Contrast Attendance QR Code */}
-            <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl bg-[#090A0C] border border-white/10 shadow-inner min-h-0">
-              <div className="bg-white p-3 sm:p-3.5 rounded-2xl shadow-[0_12px_40px_rgba(0,0,0,0.6)] border border-white/20 flex items-center justify-center">
+            {/* Hero Big High-Contrast Attendance QR Code */}
+            <div className="flex-1 flex flex-col items-center justify-center p-3 sm:p-3.5 rounded-2xl bg-[#08090C] border border-white/10 shadow-inner min-h-0">
+              <div className="bg-white p-3 sm:p-3.5 rounded-2xl shadow-[0_12px_45px_rgba(0,0,0,0.7)] border-2 border-white/30 flex items-center justify-center">
                 <DynamicQrCode
                   value={passUrl || (member.memberId ? `https://redapplegym.in/pass/${member.memberId}` : '')}
-                  size={210}
+                  size={215}
                   noCardWrapper={true}
                   showDownload={false}
                   showCopy={false}
@@ -822,13 +841,26 @@ export default function PassClient({ id = '' }: PassClientProps) {
                 />
               </div>
 
-              <div className="text-center mt-2.5 space-y-0.5">
+              <div className="text-center mt-2 space-y-0.5">
                 <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-[#D4A574] block">
                   ATTENDANCE SCAN CODE
                 </span>
                 <p className="text-[10px] text-neutral-400">
-                  Scan QR code at gym reception for instant attendance check-in.
+                  Scan QR code at front desk for instant biometric check-in
                 </p>
+              </div>
+            </div>
+
+            {/* Verified Pass Badges Row (Fills bottom of card attractively) */}
+            <div className="grid grid-cols-3 gap-1.5 pt-0.5 text-center text-[10px] text-neutral-400 shrink-0 font-medium">
+              <div className="py-1 px-1.5 rounded-xl bg-white/5 border border-white/5 truncate">
+                ✓ Fast Check-in
+              </div>
+              <div className="py-1 px-1.5 rounded-xl bg-white/5 border border-white/5 truncate">
+                ⚡ Locker Access
+              </div>
+              <div className="py-1 px-1.5 rounded-xl bg-white/5 border border-white/5 truncate">
+                📍 Cidco N-2
               </div>
             </div>
           </div>
