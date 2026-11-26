@@ -1,7 +1,9 @@
-const CACHE_NAME = 'redapple-pwa-v3';
+const CACHE_NAME = 'redapple-pwa-v4';
 
 const STATIC_PRECACHE = [
   '/',
+  '/pass',
+  '/pass/lookup',
   '/offline',
   '/manifest.json',
   '/images/logo.png',
@@ -51,12 +53,16 @@ self.addEventListener('fetch', (event) => {
     return;
   }
 
-  // Bypass service worker during local development on localhost to prevent Turbopack HMR cache conflicts
-  if (url.hostname === 'localhost' || url.hostname === '127.0.0.1' || url.pathname.includes('turbopack')) {
+  // Skip Turbopack / Next.js dev server hot reload web sockets
+  if (
+    url.pathname.includes('turbopack') ||
+    url.pathname.includes('_next/webpack-hmr') ||
+    url.pathname.startsWith('/__nextjs')
+  ) {
     return;
   }
 
-  // Handle HTML document navigations (Network-First with Offline Fallback)
+  // Handle HTML document navigations (Network-First with Offline Pass Fallback)
   if (request.mode === 'navigate') {
     event.respondWith(
       fetch(request)
@@ -71,13 +77,27 @@ self.addEventListener('fetch', (event) => {
           return response;
         })
         .catch(async () => {
-          // Check if the requested page is in cache
+          // 1. Check if the exact requested page is in cache
           const cachedResponse = await caches.match(request);
           if (cachedResponse) {
             return cachedResponse;
           }
-          // Fall back to offline page
-          const offlinePage = await caches.match('/offline');
+
+          // 2. If navigating to any pass page (e.g. /pass/..., /pass?id=...), fall back to cached pass shell
+          if (url.pathname.startsWith('/pass')) {
+            const cachedPass =
+              (await caches.match('/pass')) ||
+              (await caches.match('/pass/lookup')) ||
+              (await caches.match('/pass.html')) ||
+              (await caches.match('/pass/index.html')) ||
+              (await caches.match('/'));
+            if (cachedPass) {
+              return cachedPass;
+            }
+          }
+
+          // 3. Fall back to offline page
+          const offlinePage = (await caches.match('/offline')) || (await caches.match('/offline.html'));
           if (offlinePage) {
             return offlinePage;
           }

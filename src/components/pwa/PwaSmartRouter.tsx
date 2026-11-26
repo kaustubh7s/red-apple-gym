@@ -92,30 +92,6 @@ export const PwaSmartRouter: React.FC = () => {
     );
   }
 
-  if (deviceRole === 'admin') {
-    return (
-      <div className="fixed top-20 right-4 z-40 max-w-sm bg-neutral-900/95 backdrop-blur-xl border border-red-500/40 text-white p-3 rounded-2xl shadow-2xl flex items-center justify-between gap-3 animate-in slide-in-from-top-4">
-        <Link href="/admin" className="flex items-center gap-2.5 min-w-0 group">
-          <div className="w-8 h-8 rounded-xl bg-[#C41E3A] flex items-center justify-center text-white shrink-0 shadow-sm group-hover:scale-105 transition-transform">
-            <ShieldCheck className="w-4 h-4 text-white" />
-          </div>
-          <div className="truncate">
-            <div className="text-xs font-bold text-white">Admin Operations</div>
-            <p className="text-[10px] text-neutral-300 truncate">Tap to resume admin dashboard</p>
-          </div>
-        </Link>
-
-        <button
-          onClick={() => setShowQuickBanner(false)}
-          className="p-1 rounded-lg text-neutral-400 hover:text-white hover:bg-white/10 shrink-0"
-          title="Dismiss"
-        >
-          <X className="w-3.5 h-3.5" />
-        </button>
-      </div>
-    );
-  }
-
   return null;
 };
 

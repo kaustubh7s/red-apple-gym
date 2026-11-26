@@ -55,6 +55,22 @@ export default function PassClient({ id = '' }: PassClientProps) {
   const [checkingUnlock, setCheckingUnlock] = useState<boolean>(true);
   const [passVerificationInput, setPassVerificationInput] = useState<string>('');
   const [passVerificationError, setPassVerificationError] = useState<string>('');
+  const [isOnline, setIsOnline] = useState<boolean>(true);
+
+  // Online / Offline connectivity listener
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      setIsOnline(navigator.onLine);
+      const handleOnline = () => setIsOnline(true);
+      const handleOffline = () => setIsOnline(false);
+      window.addEventListener('online', handleOnline);
+      window.addEventListener('offline', handleOffline);
+      return () => {
+        window.removeEventListener('online', handleOnline);
+        window.removeEventListener('offline', handleOffline);
+      };
+    }
+  }, []);
 
   useEffect(() => {
     if (id && id !== resolvedId && id !== '[id]') {
@@ -218,10 +234,72 @@ export default function PassClient({ id = '' }: PassClientProps) {
     }
   }, [resolvedId, foundMember, decodedMember]);
 
+  // Offline Local Cache Retrieval: Retrieve persisted member if offline or offline PWA launch
+  const offlineCachedMember: Member | null = useMemo(() => {
+    if (typeof window === 'undefined') return null;
+    try {
+      const cleanId = (resolvedId || savedPassId || '').toUpperCase().trim();
+      if (cleanId) {
+        const cached = localStorage.getItem(`redapple_offline_pass_${cleanId}`);
+        if (cached) {
+          const parsed = JSON.parse(cached);
+          if (parsed && (parsed.id || parsed.memberId)) return parsed;
+        }
+      }
+
+      // Check saved members in redapple_members_v4
+      const memListStr = localStorage.getItem('redapple_members_v4');
+      if (memListStr) {
+        const list: Member[] = JSON.parse(memListStr);
+        if (Array.isArray(list)) {
+          const match = list.find((m) =>
+            cleanId && (
+              m.id?.toUpperCase() === cleanId ||
+              m.memberId?.toUpperCase() === cleanId ||
+              (cleanId.replace(/\D/g, '').length >= 4 && m.mobile?.replace(/\D/g, '').includes(cleanId.replace(/\D/g, '')))
+            )
+          );
+          if (match) return match;
+        }
+      }
+
+      // Check all redapple_offline_pass_ keys in localStorage
+      for (let i = 0; i < localStorage.length; i++) {
+        const key = localStorage.key(i);
+        if (key && key.startsWith('redapple_offline_pass_')) {
+          try {
+            const m: Member = JSON.parse(localStorage.getItem(key) || '{}');
+            if (cleanId && (
+              m.id?.toUpperCase() === cleanId ||
+              m.memberId?.toUpperCase() === cleanId ||
+              (cleanId.replace(/\D/g, '').length >= 4 && m.mobile?.replace(/\D/g, '').includes(cleanId.replace(/\D/g, '')))
+            )) {
+              return m;
+            }
+          } catch {}
+        }
+      }
+
+      // If user opened pass without an ID while offline, default to the last saved pass
+      const lastPass = localStorage.getItem('redapple_last_offline_pass');
+      if (lastPass) {
+        const m = JSON.parse(lastPass);
+        if (m && (m.id || m.memberId)) {
+          if (!cleanId || cleanId === m.memberId?.toUpperCase() || cleanId === m.id?.toUpperCase() || cleanId === '[ID]') {
+            return m;
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Offline cache read notice:', e);
+    }
+    return null;
+  }, [resolvedId, savedPassId]);
+
   // If not found in loaded state (e.g. member opened link on a fresh device without cloud sync),
   // construct a valid official gym pass for any RED-xxxx or MEM-xxxx ID so the pass ALWAYS opens!
   const synthesizedMember: Member | undefined = React.useMemo(() => {
-    if (foundMember || cloudMember || decodedMember || !resolvedId) return undefined;
+    if (foundMember || cloudMember || decodedMember || offlineCachedMember || !resolvedId) return undefined;
 
     const cleanId = resolvedId.toUpperCase().trim();
     if (cleanId.startsWith('RED-') || cleanId.startsWith('MEM-') || cleanId.startsWith('RAG-')) {
@@ -256,16 +334,36 @@ export default function PassClient({ id = '' }: PassClientProps) {
       };
     }
     return undefined;
-  }, [foundMember, cloudMember, decodedMember, resolvedId]);
+  }, [foundMember, cloudMember, decodedMember, offlineCachedMember, resolvedId]);
 
-  const member: Member | undefined = foundMember || cloudMember || decodedMember || synthesizedMember || undefined;
+  const member: Member | undefined =
+    foundMember || cloudMember || decodedMember || offlineCachedMember || synthesizedMember || undefined;
 
-  // Automatically remember this member's pass for direct PWA launch
+  // Automatically remember this member's pass and save offline copies for zero-net access
   useEffect(() => {
     if (member && typeof window !== 'undefined') {
       try {
         localStorage.setItem('redapple_saved_pass_id', member.memberId);
         localStorage.setItem('redapple_device_role', 'member');
+        localStorage.setItem(`redapple_offline_pass_${member.memberId.toUpperCase()}`, JSON.stringify(member));
+        localStorage.setItem(`redapple_offline_pass_${member.id.toUpperCase()}`, JSON.stringify(member));
+        localStorage.setItem('redapple_last_offline_pass', JSON.stringify(member));
+
+        // Sync into redapple_members_v4 so member list has this record
+        try {
+          const savedMemListStr = localStorage.getItem('redapple_members_v4') || '[]';
+          const parsedList: Member[] = JSON.parse(savedMemListStr);
+          const idx = parsedList.findIndex(
+            (m) => m.memberId?.toUpperCase() === member.memberId.toUpperCase() || m.id?.toUpperCase() === member.id.toUpperCase()
+          );
+          if (idx >= 0) {
+            parsedList[idx] = { ...parsedList[idx], ...member };
+          } else {
+            parsedList.unshift(member);
+          }
+          localStorage.setItem('redapple_members_v4', JSON.stringify(parsedList));
+        } catch (err) {}
+
         // Update passUrl with shareable token
         const fullShareUrl = generateShareablePassUrl(member, window.location.origin);
         setPassUrl(fullShareUrl);
@@ -482,7 +580,14 @@ export default function PassClient({ id = '' }: PassClientProps) {
           <div className="p-4 rounded-2xl bg-neutral-900/80 border border-white/10 text-left flex items-center gap-3">
             <div className="w-12 h-12 rounded-xl bg-neutral-800 border border-white/10 flex items-center justify-center font-bold text-white shrink-0 overflow-hidden">
               {member.photo ? (
-                <img src={member.photo} alt={member.fullName} className="w-full h-full object-cover blur-[2px]" />
+                <img
+                  src={member.photo}
+                  alt={member.fullName}
+                  className="w-full h-full object-cover blur-[2px]"
+                  onError={(e) => {
+                    (e.target as HTMLImageElement).src = '/images/logo.png';
+                  }}
+                />
               ) : (
                 <UserCheck className="w-6 h-6 text-neutral-400" />
               )}
@@ -636,6 +741,14 @@ export default function PassClient({ id = '' }: PassClientProps) {
 
       {/* CENTER FLOATING VIP PASS CARD */}
       <main className="max-w-md sm:max-w-lg mx-auto w-full my-auto py-2 space-y-4 z-10 px-1 sm:px-0">
+        {/* Offline Active Indicator */}
+        {!isOnline && (
+          <div className="flex items-center justify-center gap-2 py-1.5 px-4 rounded-full bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 text-xs font-semibold tracking-wide shadow-[0_0_15px_rgba(16,185,129,0.2)] animate-in fade-in">
+            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+            <span>Offline Mode Active • Digital Pass Verified on Device</span>
+          </div>
+        )}
+
         <div
           className="relative rounded-[32px] p-5 sm:p-7 bg-[#16171B]/90 backdrop-blur-2xl border border-white/10 shadow-[0_25px_60px_-15px_rgba(0,0,0,0.8)] overflow-hidden space-y-5 transition-all duration-300 hover:border-white/20"
           style={{
@@ -650,9 +763,12 @@ export default function PassClient({ id = '' }: PassClientProps) {
               <div className="relative shrink-0">
                 <div className="w-[74px] h-[74px] sm:w-[84px] sm:h-[84px] rounded-2xl overflow-hidden border-2 border-[#E50914] shadow-[0_0_20px_rgba(229,9,20,0.45)] bg-neutral-900">
                   <img
-                    src={member.photo}
+                    src={member.photo || '/images/gym-1.jpg'}
                     alt={member.fullName}
                     className="w-full h-full object-cover object-center"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = '/images/logo.png';
+                    }}
                   />
                 </div>
                 <div className="absolute -bottom-1.5 left-1/2 -translate-x-1/2 px-2.5 py-0.5 rounded-md bg-gradient-to-r from-amber-400 via-amber-300 to-amber-500 text-black font-black text-[9px] tracking-wider uppercase shadow-md border border-amber-200">

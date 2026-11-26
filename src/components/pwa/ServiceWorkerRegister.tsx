@@ -17,25 +17,6 @@ export const ServiceWorkerRegister: React.FC = () => {
   useEffect(() => {
     // 1. Service Worker Management
     if (typeof window !== 'undefined' && 'serviceWorker' in navigator) {
-      // In local development, unregister any stale service workers to prevent Turbopack chunk collisions
-      if (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') {
-        navigator.serviceWorker.getRegistrations().then((registrations) => {
-          for (const registration of registrations) {
-            registration.unregister();
-          }
-        });
-        if ('caches' in window) {
-          caches.keys().then((keys) => {
-            for (const key of keys) {
-              if (key.includes('redapple-pwa')) {
-                caches.delete(key);
-              }
-            }
-          });
-        }
-        return;
-      }
-
       // Register service worker after window load for optimal page load performance
       const handleLoad = () => {
         navigator.serviceWorker
