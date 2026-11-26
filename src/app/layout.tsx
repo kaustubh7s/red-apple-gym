@@ -60,13 +60,16 @@ export default function RootLayout({
           rel="stylesheet"
         />
         <link rel="manifest" href="/manifest.json" />
+        <link rel="icon" type="image/png" sizes="192x192" href="/icon-192x192.png" />
+        <link rel="icon" type="image/png" sizes="512x512" href="/icon-512x512.png" />
+        <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
         <link rel="apple-touch-icon" href="/apple-touch-icon.png" />
         <meta name="mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-capable" content="yes" />
         <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-        <meta name="apple-mobile-web-app-title" content="RED APPLE GYM AND FITNESS CENTER" />
-        <meta name="application-name" content="RED APPLE GYM AND FITNESS CENTER" />
-        <meta name="msapplication-TileColor" content="#1A1A1A" />
+        <meta name="apple-mobile-web-app-title" content="RED APPLE GYM" />
+        <meta name="application-name" content="RED APPLE GYM" />
+        <meta name="msapplication-TileColor" content="#0B0C0E" />
       </head>
       <body className="bg-[#F8F6F4] text-[#1A1A1A] font-sans antialiased min-h-screen selection:bg-[#C41E3A] selection:text-white">
         <AppProvider>

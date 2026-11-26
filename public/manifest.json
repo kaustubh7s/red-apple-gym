@@ -7,8 +7,8 @@
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait-primary",
-  "background_color": "#1A1A1A",
-  "theme_color": "#1A1A1A",
+  "background_color": "#0B0C0E",
+  "theme_color": "#0B0C0E",
   "lang": "en",
   "dir": "ltr",
   "categories": [
@@ -19,46 +19,58 @@
   ],
   "icons": [
     {
-      "src": "../icons/icon-48.webp",
+      "src": "/icons/icon-48.png",
       "type": "image/png",
       "sizes": "48x48",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "../icons/icon-72.webp",
+      "src": "/icons/icon-72.png",
       "type": "image/png",
       "sizes": "72x72",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "../icons/icon-96.webp",
+      "src": "/icons/icon-96.png",
       "type": "image/png",
       "sizes": "96x96",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "../icons/icon-128.webp",
+      "src": "/icons/icon-128.png",
       "type": "image/png",
       "sizes": "128x128",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "../icons/icon-192.webp",
+      "src": "/icon-192x192.png",
       "type": "image/png",
       "sizes": "192x192",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "../icons/icon-256.webp",
+      "src": "/icon-maskable-192x192.png",
+      "type": "image/png",
+      "sizes": "192x192",
+      "purpose": "maskable"
+    },
+    {
+      "src": "/icons/icon-256.png",
       "type": "image/png",
       "sizes": "256x256",
-      "purpose": "any maskable"
+      "purpose": "any"
     },
     {
-      "src": "../icons/icon-512.webp",
+      "src": "/icon-512x512.png",
       "type": "image/png",
       "sizes": "512x512",
-      "purpose": "any maskable"
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable-512x512.png",
+      "type": "image/png",
+      "sizes": "512x512",
+      "purpose": "maskable"
     }
   ],
   "shortcuts": [
@@ -66,7 +78,7 @@
       "name": "Digital Member Pass",
       "short_name": "My Pass",
       "description": "Open your Red Apple digital pass for instant QR check-in",
-      "url": "/pass/RAG-2024-001",
+      "url": "/pass",
       "icons": [
         {
           "src": "/icon-192x192.png",
